@@ -18,7 +18,7 @@
  * Mark Hessling  M.Hessling@qut.edu.au  http://www.lightlink.com/hessling/
  */
 
-static char RCSid[] = "$Id: loader.c,v 1.16 2003/02/20 07:59:39 mark Exp $";
+static char RCSid[] = "$Id: loader.c,v 1.10 2002/08/25 09:01:06 mark Exp $";
 
 #include "rxpack.h"
 
@@ -43,9 +43,7 @@ extern int  optind;
 extern PackageInitialiser *GETPACKAGEINITIALISER();
 extern PackageTerminator *GETPACKAGETERMINATOR();
 extern RexxSubcomHandler *GETPACKAGESUBCOMHANDLER();
-extern RexxExitHandler *GETPACKAGEINITHANDLER();
 extern RexxFunction *GETPACKAGEFUNCTIONS();
-extern RxPackageConstantDef *GETPACKAGECONSTANTS();
 extern void PACKAGEUSAGE();
 
 /*-----------------------------------------------------------------------------
@@ -88,21 +86,15 @@ int main
    int rc=0;
    RXSTRING retstr;
    CHAR retbuf[RETBUFLEN];
-   CHAR initexitname[100];
    RXSTRING ArgList;
-#if !defined(DYNAMIC_LIBRARY)
-# if defined(USE_WINREXX) || defined(USE_QUERCUS)
-   RXSYSEXIT ExitList[3];
-# else
+#if !defined(DYNAMIC_LIBRARY) && (defined(USE_WINREXX) || defined(USE_QUERCUS))
    RXSYSEXIT ExitList[2];
-# endif
 #endif
    RxPackageGlobalDataDef MyGlob, *RxPackageGlobalData;
 
    memset( (char *)&MyGlob, 0, sizeof( RxPackageGlobalDataDef ) );
 
    strcpy( MyGlob.RxTraceFileName, "stderr" );
-   strcpy( MyGlob.ConstantPrefix, "!" );
    MyGlob.RxTraceFilePointer = stderr;
    /* 
     * Get any program options. 
@@ -228,28 +220,14 @@ int main
     */
    if ( ( rc = RegisterRxSubcom( RxPackageGlobalData, GETPACKAGESUBCOMHANDLER() ) ) != 0 )
       return( rc );
-   /* 
-    * Register a RXINI handler to set the package constants
-    */
-   sprintf( initexitname, "%s%s", RXPACKAGENAME, "INIT" );
-   if ( ( rc = RegisterRxInit( RxPackageGlobalData, GETPACKAGEINITHANDLER(), initexitname ) ) != 0 )
-      return( rc );
    FunctionPrologue( RxPackageGlobalData, GETPACKAGEINITIALISER(), RXPACKAGENAME, 0L, NULL );
    /*
-    * Set up the system exit for the Say and Trace redirection and RxIni
+    * Set up the system exit for the Say and Trace redirection
     */
-#if !defined(DYNAMIC_LIBRARY)
-# if defined(USE_WINREXX) || defined(USE_QUERCUS)
+#if !defined(DYNAMIC_LIBRARY) && (defined(USE_WINREXX) || defined(USE_QUERCUS))
    ExitList[0].sysexit_name = RXPACKAGENAME;
    ExitList[0].sysexit_code = RXSIO;
-   ExitList[1].sysexit_name = initexitname;
-   ExitList[1].sysexit_code = RXINI;
-   ExitList[2].sysexit_code = RXENDLST;
-# else
-   ExitList[0].sysexit_name = initexitname;
-   ExitList[0].sysexit_code = RXINI;
    ExitList[1].sysexit_code = RXENDLST;
-# endif
 #endif
 
    MAKERXSTRING( retstr, retbuf, sizeof( retbuf ) );
@@ -258,13 +236,15 @@ int main
     * expects the same parameter list if called directly via the Rexx
     * interpreter.
     */
+   assert(retstr.strptr);
+   assert(ProgramName);
    RexxStart( ( RS_ARG0_TYPE )(ArgCount) ? 1 : 0,
               ( RS_ARG1_TYPE )&ArgList,
               ( RS_ARG2_TYPE )ProgramName,
               ( RS_ARG3_TYPE )NULL,
               ( RS_ARG4_TYPE )RXPACKAGENAME,
               ( RS_ARG5_TYPE )RXCOMMAND,
-#if !defined(DYNAMIC_LIBRARY)
+#if !defined(DYNAMIC_LIBRARY) && (defined(USE_WINREXX) || defined(USE_QUERCUS))
               ( RS_ARG6_TYPE )ExitList,
 #else
               ( RS_ARG6_TYPE )NULL,
@@ -272,14 +252,13 @@ int main
               ( RS_ARG7_TYPE )&rc,
               ( RS_ARG8_TYPE )&retstr);
 
-   if ( RxPackageGlobalData
-   &&   !RxPackageGlobalData->terminated )
+   if ( !RxPackageGlobalData->terminated )
    {
       rc = FunctionEpilogue( RxPackageGlobalData, RXPACKAGENAME, (ULONG)rc );
       /* 
        * Terminate the package interface.
        */
-      (void)TermRxPackage( &RxPackageGlobalData, GETPACKAGETERMINATOR(), GETPACKAGEFUNCTIONS(), RXPACKAGENAME, 0 );
+      (void)TermRxPackage( RxPackageGlobalData, GETPACKAGETERMINATOR(), GETPACKAGEFUNCTIONS(), RXPACKAGENAME, 0 );
       RxPackageGlobalData = NULL;
    }
 
