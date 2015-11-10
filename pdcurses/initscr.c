@@ -106,6 +106,9 @@ MOUSE_STATUS Mouse_status, pdc_mouse_status;
 extern RIPPEDOFFLINE linesripped[5];
 extern char linesrippedoff;
 
+#ifndef XCURSES
+static
+#endif
 WINDOW *Xinitscr(int argc, char *argv[])
 {
     int i;
