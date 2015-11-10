@@ -30,11 +30,11 @@
 
 **man-end****************************************************************/
 
-char *keyname(int key)
+const char *keyname(int key)
 {
     /* Key names must be in exactly the same order as in curses.h */
 
-    static char *key_name[] =
+    static const char *key_name[] =
     {
         "KEY_BREAK", "KEY_DOWN", "KEY_UP", "KEY_LEFT", "KEY_RIGHT",
         "KEY_HOME", "KEY_BACKSPACE", "KEY_F0", "KEY_F(1)", "KEY_F(2)",
