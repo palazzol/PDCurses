@@ -14,13 +14,13 @@
         bool has_key(int key);
 
   Description:
-        keyname() returns a string corresponding to the argument key. 
+        keyname() returns a string corresponding to the argument key.
         key may be any key returned by wgetch().
 
-        key_name() is the wide-character version. It takes a wchar_t 
+        key_name() is the wide-character version. It takes a wchar_t
         parameter, but still returns a char *.
 
-        has_key() returns TRUE for recognized keys, FALSE otherwise. 
+        has_key() returns TRUE for recognized keys, FALSE otherwise.
         This function is an ncurses extension.
 
   Portability                                X/Open    BSD    SYS V
@@ -30,11 +30,11 @@
 
 **man-end****************************************************************/
 
-char *keyname(int key)
+const char *keyname(int key)
 {
     /* Key names must be in exactly the same order as in curses.h */
 
-    static char *key_name[] =
+    static const char *key_name[] =
     {
         "KEY_BREAK", "KEY_DOWN", "KEY_UP", "KEY_LEFT", "KEY_RIGHT",
         "KEY_HOME", "KEY_BACKSPACE", "KEY_F0", "KEY_F(1)", "KEY_F(2)",

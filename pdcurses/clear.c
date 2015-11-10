@@ -17,14 +17,14 @@
         int wclrtoeol(WINDOW *win);
 
   Description:
-        erase() and werase() copy blanks (i.e. the background chtype) to 
+        erase() and werase() copy blanks (i.e. the background chtype) to
         every cell of the window.
 
         clear() and wclear() are similar to erase() and werase(), but
-        they also call clearok() to ensure that the the window is 
+        they also call clearok() to ensure that the the window is
         cleared on the next wrefresh().
 
-        clrtobot() and wclrtobot() clear the window from the current 
+        clrtobot() and wclrtobot() clear the window from the current
         cursor position to the end of the window.
 
         clrtoeol() and wclrtoeol() clear the window from the current
@@ -84,13 +84,13 @@ int clrtoeol(void)
 
 int wclrtobot(WINDOW *win)
 {
-    int savey = win->_cury;
-    int savex = win->_curx;
-
     PDC_LOG(("wclrtobot() - called\n"));
 
     if (!win)
         return ERR;
+
+    int savey = win->_cury;
+    int savex = win->_curx;
 
     /* should this involve scrolling region somehow ? */
 

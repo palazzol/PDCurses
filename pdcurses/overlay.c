@@ -41,12 +41,12 @@
 
 **man-end****************************************************************/
 
-/* Thanks to Andreas Otte <venn@@uni-paderborn.de> for the 
+/* Thanks to Andreas Otte <venn@@uni-paderborn.de> for the
    corrected overlay()/overwrite() behavior. */
 
 static int _copy_win(const WINDOW *src_w, WINDOW *dst_w, int src_tr,
                      int src_tc, int src_br, int src_bc, int dst_tr,
-                     int dst_tc, bool overlay)
+                     int dst_tc, bool _overlay)
 {
     int col, line, y1, fc, *minchng, *maxchng;
     chtype *w1ptr, *w2ptr;
@@ -77,13 +77,13 @@ static int _copy_win(const WINDOW *src_w, WINDOW *dst_w, int src_tr,
         for (col = 0; col < xdiff; col++)
         {
             if ((*w1ptr) != (*w2ptr) &&
-                !((*w1ptr & A_CHARTEXT) == ' ' && overlay))
+                !((*w1ptr & A_CHARTEXT) == ' ' && _overlay))
             {
                 *w2ptr = *w1ptr;
 
                 if (fc == _NO_CHANGE)
                     fc = col + dst_tc;
-            
+
                 lc = col + dst_tc;
             }
 
@@ -126,7 +126,7 @@ int _copy_overlap(const WINDOW *src_w, WINDOW *dst_w, bool overlay)
     last_col = min(src_w->_begx + src_w->_maxx, dst_w->_begx + dst_w->_maxx);
     last_line = min(src_w->_begy + src_w->_maxy, dst_w->_begy + dst_w->_maxy);
 
-    /* determine the overlapping region of the two windows in real 
+    /* determine the overlapping region of the two windows in real
        coordinates */
 
     /* if no overlapping region, do nothing */
@@ -181,7 +181,7 @@ int overwrite(const WINDOW *src_w, WINDOW *dst_w)
 }
 
 int copywin(const WINDOW *src_w, WINDOW *dst_w, int src_tr, int src_tc,
-            int dst_tr, int dst_tc, int dst_br, int dst_bc, int overlay)
+            int dst_tr, int dst_tc, int dst_br, int dst_bc, int _overlay)
 {
     int src_end_x, src_end_y;
     int src_rows, src_cols, dst_rows, dst_cols;
@@ -205,5 +205,5 @@ int copywin(const WINDOW *src_w, WINDOW *dst_w, int src_tr, int src_tc,
     src_end_x = src_tc + min_cols;
 
     return _copy_win(src_w, dst_w, src_tr, src_tc, src_end_y, src_end_x,
-                     dst_tr, dst_tc, overlay);
+                     dst_tr, dst_tc, _overlay);
 }

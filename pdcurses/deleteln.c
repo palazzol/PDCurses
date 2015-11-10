@@ -25,10 +25,10 @@
         current line are moved up one line.  The bottom line of the
         window is cleared.  The cursor position does not change.
 
-        With the insertln() and winsertn() functions, a blank line is 
+        With the insertln() and winsertn() functions, a blank line is
         inserted above the current line and the bottom line is lost.
 
-        mvdeleteln(), mvwdeleteln(), mvinsertln() and mvwinsertln() 
+        mvdeleteln(), mvwdeleteln(), mvinsertln() and mvwinsertln()
         allow moving the cursor and inserting/deleting in one call.
 
   Return Value:
@@ -74,7 +74,7 @@ int wdeleteln(WINDOW *win)
     for (ptr = temp; (ptr - temp < win->_maxx); ptr++)
         *ptr = blank;           /* make a blank line */
 
-    if (win->_cury <= win->_bmarg) 
+    if (win->_cury <= win->_bmarg)
     {
         win->_firstch[win->_bmarg] = 0;
         win->_lastch[win->_bmarg] = win->_maxx - 1;

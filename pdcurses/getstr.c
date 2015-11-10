@@ -26,20 +26,20 @@
         int mvwgetn_wstr(WINDOW *win, int y, int x, wint_t *wstr, int n);
 
   Description:
-        These routines call wgetch() repeatedly to build a string, 
-        interpreting erase and kill characters along the way, until a 
-        newline or carriage return is received. When PDCurses is built 
-        with wide-character support enabled, the narrow-character 
-        functions convert the wgetch()'d values into a multibyte string 
-        in the current locale before returning it. The resulting string 
-        is placed in the area pointed to by *str. The routines with n as 
+        These routines call wgetch() repeatedly to build a string,
+        interpreting erase and kill characters along the way, until a
+        newline or carriage return is received. When PDCurses is built
+        with wide-character support enabled, the narrow-character
+        functions convert the wgetch()'d values into a multibyte string
+        in the current locale before returning it. The resulting string
+        is placed in the area pointed to by *str. The routines with n as
         the last argument read at most n characters.
 
-        Note that there's no way to know how long the buffer passed to 
+        Note that there's no way to know how long the buffer passed to
         wgetstr() is, so use wgetnstr() to avoid buffer overflows.
 
   Return Value:
-        This functions return ERR on failure or any other value on 
+        This functions return ERR on failure or any other value on
         success.
 
   Portability                                X/Open    BSD    SYS V
@@ -116,7 +116,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
             {
                 if (chars < n)
                 {
-                    if (oldecho) 
+                    if (oldecho)
                         waddch(win, ch);
                     *p++ = ch;
                     ++chars;
@@ -129,7 +129,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
         case _ECHAR:        /* CTRL-H -- Delete character */
             if (p > str)
             {
-                if (oldecho) 
+                if (oldecho)
                     waddstr(win, "\b \b");
                 ch = (unsigned char)(*--p);
                 if ((ch < ' ') && (oldecho))
@@ -141,7 +141,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
         case _DLCHAR:       /* CTRL-U -- Delete line */
             while (p > str)
             {
-                if (oldecho) 
+                if (oldecho)
                     waddstr(win, "\b \b");
                 ch = (unsigned char)(*--p);
                 if ((ch < ' ') && (oldecho))
@@ -154,7 +154,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
 
             while ((p > str) && (*(p - 1) == ' '))
             {
-                if (oldecho) 
+                if (oldecho)
                     waddstr(win, "\b \b");
 
                 --p;        /* remove space */
@@ -162,7 +162,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
             }
             while ((p > str) && (*(p - 1) != ' '))
             {
-                if (oldecho) 
+                if (oldecho)
                     waddstr(win, "\b \b");
 
                 ch = (unsigned char)(*--p);
@@ -175,7 +175,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
         case '\n':
         case '\r':
             stop = TRUE;
-            if (oldecho) 
+            if (oldecho)
                 waddch(win, '\n');
             break;
 
@@ -185,7 +185,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
                 if (!SP->key_code && ch < 0x100)
                 {
                     *p++ = ch;
-                    if (oldecho) 
+                    if (oldecho)
                         waddch(win, ch);
                     chars++;
                 }
@@ -194,7 +194,7 @@ int wgetnstr(WINDOW *win, char *str, int n)
                 beep();
 
             break;
-      
+
         }
 
         wrefresh(win);
@@ -313,7 +313,7 @@ int wgetn_wstr(WINDOW *win, wint_t *wstr, int n)
             {
                 if (chars < n)
                 {
-                    if (oldecho) 
+                    if (oldecho)
                         waddch(win, ch);
                     *p++ = ch;
                     ++chars;
@@ -326,7 +326,7 @@ int wgetn_wstr(WINDOW *win, wint_t *wstr, int n)
         case _ECHAR:        /* CTRL-H -- Delete character */
             if (p > wstr)
             {
-                if (oldecho) 
+                if (oldecho)
                     waddstr(win, "\b \b");
                 ch = *--p;
                 if ((ch < ' ') && (oldecho))
@@ -338,7 +338,7 @@ int wgetn_wstr(WINDOW *win, wint_t *wstr, int n)
         case _DLCHAR:       /* CTRL-U -- Delete line */
             while (p > wstr)
             {
-                if (oldecho) 
+                if (oldecho)
                     waddstr(win, "\b \b");
                 ch = *--p;
                 if ((ch < ' ') && (oldecho))
@@ -351,7 +351,7 @@ int wgetn_wstr(WINDOW *win, wint_t *wstr, int n)
 
             while ((p > wstr) && (*(p - 1) == ' '))
             {
-                if (oldecho) 
+                if (oldecho)
                     waddstr(win, "\b \b");
 
                 --p;        /* remove space */
@@ -359,7 +359,7 @@ int wgetn_wstr(WINDOW *win, wint_t *wstr, int n)
             }
             while ((p > wstr) && (*(p - 1) != ' '))
             {
-                if (oldecho) 
+                if (oldecho)
                     waddstr(win, "\b \b");
 
                 ch = *--p;
@@ -372,7 +372,7 @@ int wgetn_wstr(WINDOW *win, wint_t *wstr, int n)
         case '\n':
         case '\r':
             stop = TRUE;
-            if (oldecho) 
+            if (oldecho)
                 waddch(win, '\n');
             break;
 
@@ -391,7 +391,7 @@ int wgetn_wstr(WINDOW *win, wint_t *wstr, int n)
                 beep();
 
             break;
-      
+
         }
 
         wrefresh(win);
